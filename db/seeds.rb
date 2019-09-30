@@ -5,7 +5,7 @@ require 'json'
 #This destroy_all methods for cleaning up the database.
 Elephant.destroy_all
 User.destroy_all
-Listing.destroy_all
+Listing.destroy_all #new_branch
 
 # require 'pry'
 User.create({name: "Elephant Sanctionary", username: "elephant_sanc", password: "elephant", balance: 1_000 })
