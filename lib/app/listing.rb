@@ -7,12 +7,15 @@ class Listing < ActiveRecord::Base
     def self.main_menu(user)
         puts "--- Main Menu ---"
         @@prompt.select("What would you like to do? 🐘") do |menu|
-            menu.choice "Check Balance", -> { "This is your balance: $#{user.balance}" }
-            menu.choice "Listings", -> { Listing.display_listing_section }
-            menu.choice "Order History", -> { Listing.order_history }
-            menu.choice "Account Settings", -> { User.account_settings }
+            menu.choice "🐘  Check Balance", -> { "This is your balance: $#{user.balance}" }
+            menu.choice "🐘  My Elephant(s)", -> { user.my_elephant }
+            menu.choice "🐘  Listings", -> { Listing.display_listing_section }
+            menu.choice "🐘  Order History", -> { Listing.order_history }
+            menu.choice "🐘  Account Settings", -> { User.account_settings }
         end
     end
+
+    
 
     def self.display_listing_section
         
