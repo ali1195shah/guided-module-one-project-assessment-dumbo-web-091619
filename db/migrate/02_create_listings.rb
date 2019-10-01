@@ -5,8 +5,26 @@ class CreateListings < ActiveRecord::Migration[5.2]
             t.integer :elephant_id
             t.integer :price
             t.string :title
+            t.string :status
             t.timestamps
             #USER DESCRIPTION SHALL BE ADDED!
         end
     end
 end
+
+
+# def alt_elephants
+#     elephants_arr = []
+
+#     listings_related_to_user = Listing.all.select{|listing|
+#     listing.user_id == self.id}.all.select{|listing|     
+#         listing.status == "transaction"
+#     }
+
+#     elephants_id_list = listings_related_to_user.all.map{|listing| listing.elephant_id}
+
+#     elephants_id_list.all.each do |id|
+#         elephants_arr << Elephant.all.find_by(id: id)
+#     end
+
+# end

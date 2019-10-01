@@ -11,9 +11,9 @@ class Interface
         sleep(1)
 
         @prompt.select("How may we help you?") do |menu|
-            menu.choice "Login", -> { User.login }
-            menu.choice "Create a New Account", -> { User.create_new_user }
-            menu.choice "Exit", -> { User.goodbye }
+            menu.choice "🐘  Login", -> { User.login }
+            menu.choice "🐘  Create a New Account", -> { User.create_new_user }
+            menu.choice "🐘  Exit", -> { User.goodbye }
         end
     end
 

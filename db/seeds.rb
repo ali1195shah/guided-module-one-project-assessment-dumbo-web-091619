@@ -44,7 +44,7 @@ def insert_listing
                 elephant_id: elephant.id,
                 price: elephant.worth,
                 title: "Official Listing of Elephant Sanctionary",
-                #TIMESTAMPS SHALL BE ADDED!
+                status: "transaction"
              }
                     ) 
     end
@@ -56,3 +56,4 @@ insert_elephant()
 insert_listing()
 # we should write this method second. because we need elephants first!
 
+Listing.all.first.update(status: "open")
