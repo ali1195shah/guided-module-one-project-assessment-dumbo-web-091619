@@ -11,6 +11,7 @@ Listing.destroy_all
 User.create({name: "Elephant Sanctionary", username: "elephant_sanc", password: "elephant", balance: 1_000 })
 User.create({name: "Ali", username: "FlameAceAli", password: "123456", balance: 429_850})
 User.create({name: "Emirhan", username: "emskaplann", password: "654321", balance: 310_000})
+User.create({name: "Exit", username: "exit_person", password: "123", balance: 0})
 
 def insert_elephant
      response_str = RestClient.get('https://elephant-api.herokuapp.com/elephants') # This is the get the ele information from the web page.
