@@ -44,8 +44,33 @@ class User < ActiveRecord::Base
         User.create(name: new_first_name, username: new_user_name, password: new_pass_word)
     end
 
-    def self.account_settings
-        
+    def self.account_settings(user)
+        @@prompt.select("What would you like to change?") do |as|
+            as.choice "Change Username", -> { user.change_username }
+            as.choice "Change Password", -> { user.change_password }
+            as.choice "Go Back to Main Menu...", -> { Listing.main_menu(user)}
+        end
+    end
+
+    def change_username
+        puts "Enter a new username: "
+        new_user_name_change = gets.chomp
+        self.update(username: new_user_name_change)
+        save
+        puts "Your Username is updated"
+        @@prompt.select("<--------->") do |sub|
+            sub.choice "Go Back to Main Menu...", -> {Listing.main_menu(self)}
+        end
+    end
+
+    def change_password
+        puts "Enter a new Password: "
+        new_pass_word_change = gets.chomp
+        self.update(password: new_pass_word_change)
+        puts "Your password is updated"
+        @@prompt.select("<--------->") do |sub|
+            sub.choice "Go Back to Main Menu...", -> {Listing.main_menu(self)}
+        end
     end
 
     def my_elephant(user)
@@ -116,15 +141,18 @@ class User < ActiveRecord::Base
         if listing.status == "open" && self.valid_money?(listing) 
             elephant = Elephant.all.find_by(id: listing.elephant_id)
             upd = self.balance - listing.price
+            upd2 = User.all.find_by(id: listing.user_id).balance + listing.price
+            User.all.find_by(id: listing.user_id).update(balance: upd2)
             self.update(balance: upd)
             Listing.create({user_id: self.id,elephant_id: elephant.id,price: listing.price,title: "*****",status: "transaction"})
-            listing.update(status: "closed transaction")
+            listing.update(status: "closed transaction") #we change it to .delete
             # binding.pry
             puts "Congrats! You have owned an 🐘💩. We hope to see you around!"
             sleep(3)
             Listing.main_menu(self)
         else
-            puts "Sorry, you don't have enough 💰 or the listing that you trying to reach is not available!"
+            puts "Sorry, you don't have enough 💰  or the listing that you trying to reach is not available!"
         end
     end
+
 end

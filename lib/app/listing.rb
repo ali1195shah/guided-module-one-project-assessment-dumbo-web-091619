@@ -11,16 +11,19 @@ class Listing < ActiveRecord::Base
             menu.choice "🐘  See My Elephant(s)", -> { user.my_elephant(user) }
             menu.choice "🐘  See All Listings That Are Available", -> { Listing.display_all_listings(user) }
             menu.choice "🐘  See My Order History", -> { Listing.order_history }
-            menu.choice "🐘  See my Account Settings", -> { User.account_settings }
+            menu.choice "🐘  See My Account Settings", -> { User.account_settings(user) }
         end
     end
 
     def self.display_all_listings(user)
-        title_arr = Listing.all.map(&:title)
+        available_listings = Listing.all.select{|listing| listing.status == "open"}
+        title_arr = available_listings.map{|listing| listing.title}
+        # binding.pry
         chosen_title = @@prompt.select("Here are all the Titles for Listings: ", title_arr)
 
-        listing1 = Listing.all.find{|listing| listing.title == chosen_title}
+        listing1 = available_listings.find{|listing| listing.title == chosen_title}
         elephant_id = listing1.elephant_id
+        # binding.pry
         elephant_obj = Elephant.all.find{|elephant| elephant.id == elephant_id}
 
             puts "Name: #{elephant_obj.name}"
@@ -39,7 +42,7 @@ class Listing < ActiveRecord::Base
 
     def order_history
         if order_history.size == 0
-            puts "You don't have any orders 😭"
+            puts "You don't have any orders  😭"
         else
             puts "Here are your past orders: "
             # First we shoud do the buy method.

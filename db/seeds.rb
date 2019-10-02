@@ -43,7 +43,7 @@ def insert_listing
                 user_id: User.all.first.id,
                 elephant_id: elephant.id,
                 price: elephant.worth,
-                title: "Official Listing of Elephant Sanctionary",
+                title: elephant.name,
                 status: "transaction"
              }
                     ) 
@@ -56,4 +56,4 @@ insert_elephant()
 insert_listing()
 # we should write this method second. because we need elephants first!
 
-Listing.all.first.update(status: "open")
+Listing.all.update_all(status: "open")
