@@ -41,7 +41,7 @@ class User < ActiveRecord::Base
         puts "How much money do you want to transfer into your Elephant account? "
         new_balance = gets.chomp
 
-        User.create(name: new_first_name, username: new_user_name, password: new_pass_word)
+        User.create(name: new_first_name, username: new_user_name, password: new_pass_word,balance: new_balance)
     end
 
     def self.account_settings(user)
@@ -144,14 +144,41 @@ class User < ActiveRecord::Base
             upd2 = User.all.find_by(id: listing.user_id).balance + listing.price
             User.all.find_by(id: listing.user_id).update(balance: upd2)
             self.update(balance: upd)
-            Listing.create({user_id: self.id,elephant_id: elephant.id,price: listing.price,title: "*****",status: "transaction"})
-            listing.update(status: "closed transaction") #we change it to .delete
+            Listing.create({user_id: self.id,elephant_id: elephant.id,pre_user_id: listing.user_id,price: listing.price,title: "you own that elephant",status: "transaction"})
+            listing.update(status: "closed") #we change it to .delete
+            user_listings = User.all.find_by(id: listing.user_id).listings
+            user_listings.find_by(elephant_id: listing.elephant_id, status: "transaction").update(status: "closed transaction")
             # binding.pry
             puts "Congrats! You have owned an 🐘💩. We hope to see you around!"
             sleep(3)
             Listing.main_menu(self)
         else
-            puts "Sorry, you don't have enough 💰  or the listing that you trying to reach is not available!"
+            puts "Sorry, you don't have enough 💰 or the listing that you trying to reach is not available!"
+        end
+    end
+
+
+    def order_history
+        if self.listings.where(status: "transaction").to_a.length == 0
+            puts "You don't have any orders  😭"
+            @@prompt.select("<--------->") do |sub|
+                sub.choice "Go Back to Main Menu...", -> {Listing.main_menu(self)}
+            end
+        else
+            puts "Here are your past orders: "
+            listings = self.listings.where(status: "transaction").to_a
+            listings.each do |listing|
+                puts "-----------------------------------------------"
+                puts "Date: #{listing.created_at.month}/#{listing.created_at.day}/#{listing.created_at.year}"
+                puts "At: #{listing.created_at.hour}:#{listing.created_at.min}:#{listing.created_at.sec}"
+                puts "Name of The Elephant: #{Elephant.all.find_by(id: listing.elephant_id).name}"
+                puts "Cost: #{listing.price}"
+                puts "Previous Owner: #{User.all.find_by(id: listing.pre_user_id).name}"
+                puts "-----------------------------------------------"
+            end
+            @@prompt.select("<--------->") do |sub|
+                sub.choice "Go Back to Main Menu...", -> {Listing.main_menu(self)}
+            end
         end
     end
 

@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 3) do
   create_table "listings", force: :cascade do |t|
     t.integer "user_id"
     t.integer "elephant_id"
+    t.integer "pre_user_id"
     t.integer "price"
     t.string "title"
     t.string "status"

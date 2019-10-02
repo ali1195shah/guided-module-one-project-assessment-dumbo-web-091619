@@ -48,6 +48,18 @@ def insert_listing
              }
                     ) 
     end
+    Elephant.all.each do |elephant|
+        Listing.create(
+            {
+                user_id: User.all.first.id,
+                elephant_id: elephant.id,
+                pre_user_id: 0,
+                price: elephant.worth,
+                title: elephant.name,
+                status: "open"
+             }
+                    ) 
+    end
 end
 
 insert_elephant()
@@ -56,4 +68,3 @@ insert_elephant()
 insert_listing()
 # we should write this method second. because we need elephants first!
 
-Listing.all.update_all(status: "open")
