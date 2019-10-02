@@ -5,11 +5,12 @@ class Listing < ActiveRecord::Base
     @@prompt = TTY::Prompt.new
 
     def self.main_menu(user)
+        system 'clear'
         user.reload
         puts "--- Main Menu ---"
         @@prompt.select("What would you like to do? 🐘") do |menu|
             menu.choice "🐘  Check My Balance", -> { user.show_my_balance(user) }
-            menu.choice "🐘  See My Elephant(s)", -> { user.my_elephant(user) }
+            menu.choice "🐘  See My Elephant(s)", -> { user.my_elephant }
             menu.choice "🐘  See All Listings That Are Available", -> { Listing.display_all_listings(user) }
             menu.choice "🐘  See My Order History", -> { user.order_history }
             menu.choice "🐘  See My Account Settings", -> { User.account_settings(user) }
@@ -18,6 +19,7 @@ class Listing < ActiveRecord::Base
     end
 
     def self.display_all_listings(user)
+        system 'clear'
         available_listings = Listing.all.select{|listing| listing.status == "open"}
         title_arr = available_listings.map{|listing| listing.title}
         # binding.pry
@@ -37,7 +39,7 @@ class Listing < ActiveRecord::Base
             puts "Species: #{elephant_obj.species}"
             puts "Gender: #{elephant_obj.gender}"
             puts "About: #{elephant_obj.note}"
-            puts "Bought for: $#{elephant_obj.worth}"
+            puts "Price: $#{listing.price}"
 
         @@prompt.select("<--------->") do |sub|
             sub.choice "Buy This Elephant!", -> { user.buy_elephant(listing)}

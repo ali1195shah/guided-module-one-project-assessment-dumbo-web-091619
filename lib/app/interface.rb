@@ -7,6 +7,7 @@ class Interface
     end
 
     def welcome
+        system 'clear'
         puts "Hi, Welcome to the home of Elephant Healing and Care Center/Sanctionary"
         sleep(1)
 

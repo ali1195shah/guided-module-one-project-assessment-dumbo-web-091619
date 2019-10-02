@@ -65,6 +65,14 @@ end
 insert_elephant()
 # There are a total of 47 elephant. SHIT BRO!
 
+Elephant.all.last.delete
+Elephant.all.last.delete
+Elephant.all.last.delete
+Elephant.all.last.delete
+Elephant.all.last.delete
+Elephant.all.last.delete
+
 insert_listing()
 # we should write this method second. because we need elephants first!
+
 

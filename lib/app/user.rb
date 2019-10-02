@@ -45,6 +45,7 @@ class User < ActiveRecord::Base
     end
 
     def self.account_settings(user)
+        system 'clear'
         @@prompt.select("What would you like to change?") do |as|
             as.choice "Change Username", -> { user.change_username }
             as.choice "Change Password", -> { user.change_password }
@@ -73,11 +74,12 @@ class User < ActiveRecord::Base
         end
     end
 
-    def my_elephant(user)
+    def my_elephant
+        system 'clear'
         if self.elephants == []
             puts "Sorry, you don't have an Elephant!"
             @@prompt.select("<--------->") do |sub|
-                sub.choice "Go Back to Main Menu...", -> {Listing.main_menu(user)}
+                sub.choice "Go Back to Main Menu...", -> {Listing.main_menu(self)}
             end
         else
             # elephants_name = self.elephants.map do
@@ -86,19 +88,24 @@ class User < ActiveRecord::Base
             elephants_name = self.alt_elephants.map(&:name)
 
             chosen_elephant = @@prompt.select("Here is the list of your Elephant(s): ", elephants_name)
-            elephant_obj = Elephant.all.find{|elephant| elephant.name == chosen_elephant}
+            elephant_obj2 = Elephant.all.find{|elephant| elephant.name == chosen_elephant}
+            show_details_me(elephant_obj2)
+        end
+    end
 
-            puts "Name: #{elephant_obj.name}"
-            puts "From: #{elephant_obj.affiliation}"
-            puts "Date of Birth: #{elephant_obj.dob}"
-            puts "Species: #{elephant_obj.species}"
-            puts "Gender: #{elephant_obj.gender}"
-            puts "About: #{elephant_obj.note}"
-            puts "Bought for: $#{elephant_obj.worth}"
+    def show_details_me(elephant_obj)
+        puts "Name: #{elephant_obj.name}"
+        puts "From: #{elephant_obj.affiliation}"
+        puts "Date of Birth: #{elephant_obj.dob}"
+        puts "Species: #{elephant_obj.species}"
+        puts "Gender: #{elephant_obj.gender}"
+        puts "About: #{elephant_obj.note}"
+        puts "Bought for: $#{elephant_obj.worth}"
 
-            @@prompt.select("<--------->") do |sub|
-                sub.choice "Go Back to Main Menu...", -> {Listing.main_menu(user)}
-            end
+        @@prompt.select("<--------->") do |sub|
+            sub.choice "Sell This Elephant", -> { self.sell_elephant(elephant_obj) }
+            sub.choice "Go Back to List...", -> { self.my_elephant }
+            sub.choice "Go Back to Main Menu...", -> {Listing.main_menu(self)}
         end
     end
 
@@ -123,6 +130,7 @@ class User < ActiveRecord::Base
     #The Method in above this line is created to be alternative method for a ActiveRecord Method .elephants which is in the User Class.
 
     def show_my_balance(user)
+        system 'clear'
         puts "This is your balance: $#{self.balance}"
         @@prompt.select("<--------->") do |sub|
             sub.choice "Go Back to Main Menu...", -> {Listing.main_menu(user)}
@@ -138,18 +146,20 @@ class User < ActiveRecord::Base
     end
 
     def buy_elephant(listing)
+        system 'clear'
         if listing.status == "open" && self.valid_money?(listing) 
             elephant = Elephant.all.find_by(id: listing.elephant_id)
             upd = self.balance - listing.price
             upd2 = User.all.find_by(id: listing.user_id).balance + listing.price
             User.all.find_by(id: listing.user_id).update(balance: upd2)
             self.update(balance: upd)
+            elephant.update(worth: listing.price)
             Listing.create({user_id: self.id,elephant_id: elephant.id,pre_user_id: listing.user_id,price: listing.price,title: "you own that elephant",status: "transaction"})
             listing.update(status: "closed") #we change it to .delete
             user_listings = User.all.find_by(id: listing.user_id).listings
             user_listings.find_by(elephant_id: listing.elephant_id, status: "transaction").update(status: "closed transaction")
             # binding.pry
-            puts "Congrats! You have owned an 🐘💩. We hope to see you around!"
+            puts "Congrats! You have owned an 🐘 💩. We hope to see you around!"
             sleep(3)
             Listing.main_menu(self)
         else
@@ -159,6 +169,7 @@ class User < ActiveRecord::Base
 
 
     def order_history
+        system 'clear'
         if self.listings.where(status: "transaction").to_a.length == 0
             puts "You don't have any orders  😭"
             @@prompt.select("<--------->") do |sub|
@@ -172,7 +183,7 @@ class User < ActiveRecord::Base
                 puts "Date: #{listing.created_at.month}/#{listing.created_at.day}/#{listing.created_at.year}"
                 puts "At: #{listing.created_at.hour}:#{listing.created_at.min}:#{listing.created_at.sec}"
                 puts "Name of The Elephant: #{Elephant.all.find_by(id: listing.elephant_id).name}"
-                puts "Cost: #{listing.price}"
+                puts "Cost: $#{listing.price}" 
                 puts "Previous Owner: #{User.all.find_by(id: listing.pre_user_id).name}"
                 puts "-----------------------------------------------"
             end
@@ -180,6 +191,21 @@ class User < ActiveRecord::Base
                 sub.choice "Go Back to Main Menu...", -> {Listing.main_menu(self)}
             end
         end
+    end
+
+    def sell_elephant(elephant)
+        puts "Please enter a price you want: "
+        price1 = gets.chomp
+        Listing.create({user_id: self.id, elephant_id: elephant.id, pre_user_id: self.id, price: price1, title: elephant.name, status: "open"})
+        puts "."
+        sleep(1)
+        puts ".."
+        sleep(1)
+        puts "..."
+        sleep(1)
+        puts "🍰🎈 Your Listing has been created! 🎈🍰"
+        sleep(2)
+        Listing.main_menu(self)
     end
 
 end
