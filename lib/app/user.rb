@@ -145,7 +145,7 @@ class User < ActiveRecord::Base
             User.all.find_by(id: listing.user_id).update(balance: upd2)
             self.update(balance: upd)
             Listing.create({user_id: self.id,elephant_id: elephant.id,price: listing.price,title: "*****",status: "transaction"})
-            listing.update(status: "closed transaction")
+            listing.update(status: "closed transaction") #we change it to .delete
             # binding.pry
             puts "Congrats! You have owned an 🐘💩. We hope to see you around!"
             sleep(3)
