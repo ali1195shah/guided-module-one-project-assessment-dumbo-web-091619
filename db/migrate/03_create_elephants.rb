@@ -12,3 +12,8 @@ class CreateElephants < ActiveRecord::Migration[5.2]
         end
     end
 end
+
+
+# This is to create a database table. 
+# The table is called elephants.
+# table has 7 rows

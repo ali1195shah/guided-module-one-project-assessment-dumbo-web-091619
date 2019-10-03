@@ -29,3 +29,9 @@ end
 #     end
 
 # end
+
+
+# This is to create a database table. 
+# The table is called listings. (ALL TABLES MUST BE PLURAL)
+# All tables have id row
+# This table has 7 rows

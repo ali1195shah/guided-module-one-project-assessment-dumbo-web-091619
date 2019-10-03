@@ -9,3 +9,10 @@ class CreateUsers < ActiveRecord::Migration[5.2]
         end
     end
 end
+
+# This is to create a database table. 
+# The table is called users.
+# table has 4 rows
+
+# ONCE ALL THE TABLES YOU WANT ARE CREATED, YOU MUST DO rake db:migrate
+# THEN DO rake db:seed

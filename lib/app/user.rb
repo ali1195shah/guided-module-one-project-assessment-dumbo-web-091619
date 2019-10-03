@@ -28,7 +28,7 @@ class User < ActiveRecord::Base
         User.find_by(name: "Exit")
     end
 
-    def self.create_new_user
+    def self.create_new_user # Making a new user.
         puts "Username: "
         new_user_name = gets.chomp
 
@@ -41,22 +41,23 @@ class User < ActiveRecord::Base
         puts "How much money do you want to transfer into your Elephant account? "
         new_balance = gets.chomp
 
-        User.create(name: new_first_name, username: new_user_name, password: new_pass_word,balance: new_balance)
+        User.create(name: new_first_name, username: new_user_name, password: new_pass_word,balance: new_balance) # Makes a new user and adds it to the database.
     end
 
     def self.account_settings(user)
         system 'clear'
+        # This asks the user to what would they like to change.
         @@prompt.select("What would you like to change?") do |as|
-            as.choice "Change Username", -> { user.change_username }
-            as.choice "Change Password", -> { user.change_password }
-            as.choice "Go Back to Main Menu...", -> { Listing.main_menu(user)}
+            as.choice "Change Username", -> { user.change_username } # This will go to the change_username method in the User class.
+            as.choice "Change Password", -> { user.change_password } # This will go to the change_oassword method in the User class.
+            as.choice "Go Back to Main Menu...", -> { Listing.main_menu(user)} # This will fo to the main_menu method in Lising class.
         end
     end
 
     def change_username
         puts "Enter a new username: "
         new_user_name_change = gets.chomp
-        self.update(username: new_user_name_change)
+        self.update(username: new_user_name_change) # This will update to user username in the users table.
         save
         puts "Your Username is updated"
         @@prompt.select("<--------->") do |sub|
@@ -67,7 +68,7 @@ class User < ActiveRecord::Base
     def change_password
         puts "Enter a new Password: "
         new_pass_word_change = gets.chomp
-        self.update(password: new_pass_word_change)
+        self.update(password: new_pass_word_change) # This will update the user password in the users table.
         puts "Your password is updated"
         @@prompt.select("<--------->") do |sub|
             sub.choice "Go Back to Main Menu...", -> {Listing.main_menu(self)}
@@ -147,9 +148,9 @@ class User < ActiveRecord::Base
 
     def buy_elephant(listing)
         system 'clear'
-        if listing.status == "open" && self.valid_money?(listing) 
-            elephant = Elephant.all.find_by(id: listing.elephant_id)
-            upd = self.balance - listing.price
+        if listing.status == "open" && self.valid_money?(listing) # This checks if the status is "open" and is valid_money return true.
+            elephant = Elephant.all.find_by(id: listing.elephant_id) # Going over the Elephant table looking at the id. Find the entrie that matches listing.elephant_id
+            upd = self.balance - listing.price # Users balance gets subtracted.
             upd2 = User.all.find_by(id: listing.user_id).balance + listing.price
             User.all.find_by(id: listing.user_id).update(balance: upd2)
             self.update(balance: upd)

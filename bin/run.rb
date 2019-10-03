@@ -1,6 +1,6 @@
 require_relative '../config/environment'
 
-interface = Interface.new()
+interface = Interface.new() # This is the first thing that runs when you start the app.
 user = interface.welcome()
 
 while user.nil?
