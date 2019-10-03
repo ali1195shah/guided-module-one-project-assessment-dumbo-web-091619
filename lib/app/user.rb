@@ -56,7 +56,7 @@ class User < ActiveRecord::Base
 
     def change_username
         puts "Enter a new username: "
-        new_user_name_change = gets.chomp
+        new_user_name_change = gets.chomp #asdadsadasdasc
         self.update(username: new_user_name_change) # This will update to user username in the users table.
         save
         puts "Your Username is updated"
